@@ -54,7 +54,7 @@ api:
     port: 5001
     annotations: {}
     labels: {}
-    clusterIP: ""
+    clusterIP: "10.0.0.10"
   url:
     # The base URL of console application, refers to the Console base URL of WEB service if console domain is
     # different from api or web app domain.
