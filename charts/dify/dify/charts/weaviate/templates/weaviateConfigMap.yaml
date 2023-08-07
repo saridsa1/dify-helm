@@ -1,0 +1,33 @@
+---
+# Source: dify/charts/weaviate/templates/weaviateConfigMap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: weaviate-config
+  labels:
+    app.kubernetes.io/name: weaviate
+    app.kubernetes.io/managed-by: helm
+data:
+  conf.yaml: |-
+    ---
+    authentication:
+      anonymous_access:
+        enabled: false
+      apikey:
+        allowed_keys:
+        - WVF5YThaHlkYwhGUSmCRgsX3tD5ngdN8pkih
+        enabled: true
+        users:
+        - hello@dify.ai
+      oidc:
+        enabled: false
+    authorization:
+      admin_list:
+        enabled: true
+        read_only_users: null
+        users:
+        - hello@dify.ai
+    
+    query_defaults:
+      limit: 100
+    debug: false

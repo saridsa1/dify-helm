@@ -1,0 +1,55 @@
+---
+# Source: dify/templates/worker-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    
+    descriptions: worker
+  labels:
+    helm.sh/chart: dify-0.15.0
+    app.kubernetes.io/name: dify
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "0.3.1"
+    app.kubernetes.io/managed-by: Helm
+    component: worker
+    # app: release-name-dify-worker
+    
+  name: release-name-dify-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: dify
+      app.kubernetes.io/instance: release-name
+      component: worker
+      
+  template:
+    metadata:
+      annotations:
+        
+      labels:
+        app.kubernetes.io/name: dify
+        app.kubernetes.io/instance: release-name
+        component: worker
+        
+        
+    spec:
+      containers:
+      - image: "langgenius/dify-api:0.3.1"
+        imagePullPolicy: "IfNotPresent"
+        name: worker
+        env:
+        envFrom:
+          - configMapRef:
+              name: release-name-dify-worker
+        resources:
+            {}
+        volumeMounts:
+        - name: app-data
+          mountPath: "/app/api/storage"
+          subPath: 
+      volumes:
+      - name: app-data
+        persistentVolumeClaim:
+          claimName: release-name-dify

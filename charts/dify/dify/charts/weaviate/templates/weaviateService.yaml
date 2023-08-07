@@ -1,0 +1,18 @@
+---
+# Source: dify/charts/weaviate/templates/weaviateService.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: weaviate
+  labels:
+    app.kubernetes.io/name: weaviate
+    app.kubernetes.io/managed-by: helm
+spec:
+  type: ClusterIP
+  selector:
+    app: weaviate
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 8080
