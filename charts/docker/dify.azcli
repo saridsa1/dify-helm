@@ -1,0 +1,1 @@
+az container create --resource-group rg-llmopsplatform-openai-sbx-westeurope-01 --name llmops --file ./docker-compose.yaml
