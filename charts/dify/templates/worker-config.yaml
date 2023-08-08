@@ -1,6 +1,52 @@
+---
+# Source: dify/templates/worker-config.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "dify.worker.fullname" . }}
+  name: release-name-dify-worker
 data:
-  {{- include "dify.worker.config" . | nindent 2 }}
+  # worker service
+  # The Celery worker for processing the queue.
+  # Startup mode, 'worker' starts the Celery worker for processing the queue.
+  MODE: worker
+  
+  # --- All the configurations below are the same as those in the 'api' service. ---
+  
+  # The log level for the application. Supported values are `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`
+  LOG_LEVEL: INFO
+  # A secret key that is used for securely signing the session cookie and encrypting sensitive information on the database. You can generate a strong key using `openssl rand -base64 42`.
+  # same as the API service
+  SECRET_KEY: sk-9f73s3ljTXVcMT3Blb3ljTqtsKiGHXVcMT3BlbkFJLK7U
+  # The configurations of postgres database connection.
+  # It is consistent with the configuration in the 'db' service below.
+  
+    
+  DB_USERNAME: postgres
+  DB_PASSWORD: difyai123456
+  DB_HOST: release-name-postgresql-primary
+  DB_PORT: "5432"
+  DB_DATABASE: dify
+  
+  # The configurations of redis cache connection.
+  REDIS_HOST: release-name-redis-master
+  REDIS_PORT: "6379"
+  REDIS_USERNAME: ""
+  REDIS_PASSWORD: "difyai123456"
+  REDIS_USE_SSL: "false"
+  # use redis db 0 for redis cache
+  REDIS_DB: "0"
+  # The configurations of celery broker.# Use redis as the broker, and redis db 1 for celery broker.
+  CELERY_BROKER_URL: redis://:difyai123456@release-name-redis-master:6379/1
+  # The type of storage to use for storing user files. Supported values are `local` and `s3`, Default: `local`
+  STORAGE_TYPE: local
+  # The path to the local storage directory, the directory relative the root path of API service codes or absolute path. Default: `storage` or `/home/john/storage`.
+  # only available when STORAGE_TYPE is `local`.
+  STORAGE_LOCAL_PATH: /app/api/storage
+  # The Vector store configurations.
+  # The type of vector store to use. Supported values are `weaviate`, `qdrant`.
+  VECTOR_STORE: weaviate
+  # The Weaviate endpoint URL. Only available when VECTOR_STORE is `weaviate`.
+  
+  WEAVIATE_ENDPOINT: "http://weaviate"
+  # The Weaviate API key.
+  WEAVIATE_API_KEY: WVF5YThaHlkYwhGUSmCRgsX3tD5ngdN8pkih

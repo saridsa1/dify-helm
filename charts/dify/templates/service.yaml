@@ -1,49 +1,24 @@
-{{- if .Values.proxy.enabled }}
+---
+# Source: dify/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "dify.fullname" . }}
+  name: release-name-dify
   labels:
-{{ include "dify.labels" . | indent 4 }}
-{{- if .Values.service.labels }}
-{{ toYaml .Values.service.labels | indent 4 }}
-{{- end }}
-{{- if .Values.proxy.enabled }}
+    helm.sh/chart: dify-0.15.0
+    app.kubernetes.io/name: dify
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "0.3.1"
+    app.kubernetes.io/managed-by: Helm
     component: "proxy"
-{{- end }}
-{{- with .Values.service.annotations }}
-  annotations:
-{{ toYaml . | indent 4 }}
-{{- end }}
 spec:
-{{- if (or (eq .Values.service.type "ClusterIP") (empty .Values.service.type)) }}
   type: ClusterIP
-  {{- if .Values.service.clusterIP }}
-  clusterIP: {{ .Values.service.clusterIP }}
-  {{- end }}
-{{- else if eq .Values.service.type "LoadBalancer" }}
-  type: LoadBalancer
-  {{- if .Values.service.loadBalancerIP }}
-  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
-  {{- end }}
-  {{- if .Values.service.loadBalancerSourceRanges }}
-  loadBalancerSourceRanges:
-{{ toYaml .Values.service.loadBalancerSourceRanges | indent 4 }}
-  {{- end -}}
-{{- else }}
-  type: {{ .Values.service.type }}
-{{- end }}
   ports:
     - name: dify
-      port: {{ .Values.service.port }}
+      port: 80
       protocol: TCP
       targetPort: dify
-{{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
-      nodePort: {{.Values.service.nodePort}}
-{{- end }}
   selector:
-{{ include "dify.selectorLabels" . | indent 4 }}
-{{- if and .Values.proxy.enabled }}
+    app.kubernetes.io/name: dify
+    app.kubernetes.io/instance: release-name
     component: "proxy"
-{{- end }}
-{{- end }}
